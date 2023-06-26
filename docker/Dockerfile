@@ -8,8 +8,14 @@ RUN mkdir -p /llm/models
 # WizardLM
 RUN mkdir /llm/models/WizardLM
 WORKDIR /llm/models/WizardLM
-RUN for file in `curl https://huggingface.co/api/models/ehartford/WizardLM-13B-V1.0-Uncensored | jq -r .siblings[].rfilename`; \
-	do curl -L -C - https://huggingface.co/ehartford/WizardLM-13B-V1.0-Uncensored/resolve/main/$file --create-dirs -o $file; done
+	
+RUN for file in `curl https://huggingface.co/api/models/ehartford/WizardLM-7B-V1.0-Uncensored | jq -r .siblings[].rfilename`; \
+	do curl -L -C - https://huggingface.co/ehartford/WizardLM-7B-V1.0-Uncensored/resolve/main/$file --create-dirs -o $file; done
+
+# Replace with this to use 13B model (or a different one)
+# RUN for file in `curl https://huggingface.co/api/models/ehartford/WizardLM-13B-V1.0-Uncensored | jq -r .siblings[].rfilename`; \
+#	do curl -L -C - https://huggingface.co/ehartford/WizardLM-13B-V1.0-Uncensored/resolve/main/$file --create-dirs -o $file; done
+
 
 
 ################ Main container ################
