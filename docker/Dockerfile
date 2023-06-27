@@ -10,17 +10,20 @@ RUN mkdir -p /llm/models
 RUN mkdir /llm/models/WizardLM
 WORKDIR /llm/models/WizardLM
 
-RUN for file in `curl https://huggingface.co/api/models/ehartford/WizardLM-7B-V1.0-Uncensored | jq -r .siblings[].rfilename`; \
-	do curl -L -C - https://huggingface.co/ehartford/WizardLM-7B-V1.0-Uncensored/resolve/main/$file --create-dirs -o $file; done
+RUN for file in `curl https://huggingface.co/api/models/TheBloke/WizardLM-13B-V1.0-Uncensored-GPTQ | jq -r .siblings[].rfilename`; \
+	do curl -L -C - https://huggingface.co/TheBloke/WizardLM-13B-V1.0-Uncensored-GPTQ/resolve/main/$file --create-dirs -o $file; done
 
+# RUN for file in `curl https://huggingface.co/api/models/ehartford/WizardLM-7B-V1.0-Uncensored | jq -r .siblings[].rfilename`; \
+#	do curl -L -C - https://huggingface.co/ehartford/WizardLM-7B-V1.0-Uncensored/resolve/main/$file --create-dirs -o $file; done
+#
 # Replace with this to use 13B model (or a different one)
 # RUN for file in `curl https://huggingface.co/api/models/ehartford/WizardLM-13B-V1.0-Uncensored | jq -r .siblings[].rfilename`; \
 #	do curl -L -C - https://huggingface.co/ehartford/WizardLM-13B-V1.0-Uncensored/resolve/main/$file --create-dirs -o $file; done
 
 ## OpenLlama
-RUN mkdir /llm/models/OpenLlama
-WORKDIR /llm/models/OpenLlama
-
+# RUN mkdir /llm/models/OpenLlama
+# WORKDIR /llm/models/OpenLlama
+#
 # RUN for file in `curl https://huggingface.co/api/models/openlm-research/open_llama_13b | jq -r .siblings[].rfilename`; \
 #	do curl -L -C - https://huggingface.co/openlm-research/open_llama_13b/resolve/main/$file --create-dirs -o $file; done
 
@@ -63,4 +66,6 @@ RUN pip install -r requirements.txt
 COPY --from=dw_models --chown=llm /llm/ $LLM_PROJECT/
 
 EXPOSE 7860/tcp
-CMD ["/bin/bash", "-c", "python3 server.py --chat --auto-devices --xformers --listen --load-in-4bit"]  # If using GPTQ models, use:  --loader exllama_hf
+
+# If using non-GPTQ models remove --loader exllama_hf
+CMD ["/bin/bash", "-c", "python3 server.py --chat --auto-devices --xformers --listen --load-in-4bit --loader exllama_hf"]
